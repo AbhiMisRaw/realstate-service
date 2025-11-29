@@ -16,14 +16,12 @@ from app.service.user_service import (
 router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-# ----------------------------- Register -----------------------------
 
 @router.post("/register")
 async def register_user(payload: UserRegistrationModel, db: AsyncSession = Depends(get_db)):
     return await handle_user_registration(payload, db)
 
 
-# ----------------------------- Login -----------------------------
 @router.post("/login")
 async def login_user(payload: UserLoginModel, db: AsyncSession = Depends(get_db)):
     return await handle_login_user(payload, db)
@@ -38,9 +36,3 @@ async def current_user(user : User = Depends(get_current_user_from_token)):
         "name": user.full_name
     }
 
-
-@router.get("/cache-test")
-async def cache_test(redis = Depends(get_redis)):
-    await redis.set("msg", "Hello Redis")
-    value = await redis.get("msg")
-    return {"value": value}
